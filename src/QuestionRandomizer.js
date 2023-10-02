@@ -7,7 +7,6 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [showList, setShowList] = useState(true);
 
   const toggleCategory = (category) => {
     setSelectedCategories(prev =>
