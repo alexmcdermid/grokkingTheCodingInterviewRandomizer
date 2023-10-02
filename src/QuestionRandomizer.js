@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button, Text, Link, Heading, Box } from '@chakra-ui/react';
 import questions from './Questions';
 
 const QuestionRandomizer = () => {
@@ -16,15 +17,17 @@ const QuestionRandomizer = () => {
   };
 
   return (
-    <div>
-      <button onClick={getRandomQuestion}>Get Random Question</button>
+    <Box>
+      <Button colorScheme="teal" onClick={getRandomQuestion}>Get Random Question</Button>
       {randomQuestion && (
-        <div>
-          <h2>Category: {randomCategory}</h2>
-          <a href={randomQuestion} target="_blank" rel="noopener noreferrer">{randomQuestion}</a>
-        </div>
+        <Box mt={4}>
+          <Heading as="h2" size="md">Category: {randomCategory}</Heading>
+          <Link href={randomQuestion} isExternal mt={2} color="teal.500">
+            {randomQuestion} <Text as="span" ml={1}>→</Text>
+          </Link>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
