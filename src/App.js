@@ -8,8 +8,8 @@ function App() {
 
   return (
     <Container>
-      <Flex gap={2} p={4}>
-        <Heading as="h1" size="md">
+      <Flex gap={4} p={4}>
+        <Heading as="h1" size="md" whiteSpace="nowrap">
           Grokking The Coding Interview Randomizer
         </Heading>
         <IconButton
