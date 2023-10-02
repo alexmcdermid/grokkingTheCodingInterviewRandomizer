@@ -16,6 +16,13 @@ const QuestionRandomizer = () => {
     setRandomQuestion(randomQuestion);
   };
 
+  const getProblemTitle = (url) => {
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 2];
+    const words = lastPart.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    return words.join(' ');
+  };
+
   return (
     <Box>
       <Button colorScheme="teal" onClick={getRandomQuestion}>Get Random Question</Button>
@@ -23,7 +30,7 @@ const QuestionRandomizer = () => {
         <Box mt={4}>
           <Heading as="h2" size="md">Category: {randomCategory}</Heading>
           <Link href={randomQuestion} isExternal mt={2} color="teal.500">
-            {randomQuestion} <Text as="span" ml={1}>→</Text>
+            {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
           </Link>
         </Box>
       )}
