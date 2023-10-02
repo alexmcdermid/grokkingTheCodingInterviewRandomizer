@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Text, Link, Heading, Box, Menu, MenuButton, MenuList, MenuItem, Checkbox } from '@chakra-ui/react';
+import { Button, Text, Link, Heading, Box, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import questions from './Questions';
 
@@ -7,6 +7,7 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showList, setShowList] = useState(true);
 
   const toggleCategory = (category) => {
     setSelectedCategories(prev =>
@@ -57,6 +58,28 @@ const QuestionRandomizer = () => {
           <Link href={randomQuestion} isExternal mt={2} color="teal.500">
             {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
           </Link>
+        </Box>
+      )}
+
+      {selectedCategories.length > 0 && (
+        <Box mt={4}>
+          <Heading as="h3" size="sm">Selected Questions by Category:</Heading>
+          <List spacing={3}>
+            {selectedCategories.map(category => (
+              <ListItem key={category}>
+                <Heading as="h4" size="xs">{category}</Heading>
+                <List styleType="disc" pl={5}>
+                  {questions[category].map((question, index) => (
+                    <ListItem key={index}>
+                      <Link href={question} isExternal color="teal.400">
+                        {getProblemTitle(question)}
+                      </Link>
+                    </ListItem>
+                  ))}
+                </List>
+              </ListItem>
+            ))}
+          </List>
         </Box>
       )}
     </Box>
