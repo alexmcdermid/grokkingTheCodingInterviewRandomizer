@@ -4,7 +4,7 @@
 
 ## Overview
 
-This repository serves as a tool for selecting a random question from the "Grokking the Coding Interview: Patterns for Coding Questions" course. The questions are aligned with their corresponding LeetCode or GeeksforGeeks links, neatly organized by pattern types. The aim is to provide a structured pathway for practicing coding questions in preparation for interviews.
+This repository serves as a tool for selecting a random question similar to those from "Grokking the Coding Interview: Patterns for Coding Questions". The questions are aligned with their corresponding LeetCode links, neatly organized by pattern types. The aim is to provide a structured pathway for practicing coding questions in preparation for interviews.
 
 ## How to Use
 
