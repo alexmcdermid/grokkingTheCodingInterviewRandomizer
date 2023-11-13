@@ -39,6 +39,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = () => {
+    toast({
+      title: 'Sign-out successful',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
     return auth.signOut();
   };
 
