@@ -15,9 +15,10 @@ This repository serves as a tool for selecting a random question similar to thos
 
 ## Features
 
-- Randomized selection of patterns and questions
-- Quick and straightforward, no hassle
-- Designed to help you gain experience with various types of questions
+- Randomized selection of patterns and questions.
+- Quick and straightforward, no hassle.
+- Designed to help you gain experience with various types of questions.
+- **NEW** Sign in via Github Oauth to track question history.
 
 ## Contributing
 
