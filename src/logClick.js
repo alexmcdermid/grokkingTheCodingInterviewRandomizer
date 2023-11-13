@@ -10,6 +10,7 @@ export const useLogClick = () => {
     const clickData = {
       uid: userId,
       link: linkId,
+      completed: false,
       clickedAt: serverTimestamp()
     };
 
