@@ -1,5 +1,3 @@
-'use client'
-
 import {
   Box,
   Flex,
@@ -10,16 +8,17 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  useDisclosure,
   useColorModeValue,
   Stack,
   useColorMode,
   Center,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { useAuth } from './AuthContext';
 
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode()
+  const { currentUser, signInWithGitHub, signOut } = useAuth();
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={8}>
@@ -32,8 +31,8 @@ export default function Nav() {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
 
-              {true ? 
-                <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}>
+              {!currentUser ? 
+                <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} onClick={signInWithGitHub}>
                   Sign In
                 </Button>
               : 
@@ -59,13 +58,13 @@ export default function Nav() {
                     </Center>
                     <br />
                     <Center>
-                      <p>Username</p>
+                      <p>{currentUser.displayName}</p>
                     </Center>
                     <br />
                     <MenuDivider />
                     <MenuItem>Your Stats</MenuItem>
                     <MenuItem>Account Settings</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={signOut}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
               }
