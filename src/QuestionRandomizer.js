@@ -81,7 +81,7 @@ const QuestionRandomizer = () => {
                 <List styleType="disc" pl={5}>
                   {questions[category].map((question, index) => (
                     <ListItem key={index}>
-                      <Link href={question} isExternal color="teal.400">
+                      <Link href={question} onClick={handleClick} isExternal color="teal.400">
                         {getProblemTitle(question)}
                       </Link>
                     </ListItem>
