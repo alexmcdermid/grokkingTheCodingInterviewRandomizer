@@ -62,8 +62,8 @@ export default function Nav() {
                     </Center>
                     <br />
                     <MenuDivider />
-                    <MenuItem>Your Stats</MenuItem>
-                    <MenuItem>Account Settings</MenuItem>
+                    {/* <MenuItem>Your Stats</MenuItem>
+                    <MenuItem>Account Settings</MenuItem> */}
                     <MenuItem onClick={signOut}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
