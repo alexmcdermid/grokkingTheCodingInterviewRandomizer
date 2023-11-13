@@ -8,7 +8,7 @@ function App() {
     <Box>
       <Navbar/>
       <Container>
-        <Box padding="6" boxShadow="lg">
+        <Box padding="4" marginTop={4} boxShadow="lg">
           <Flex gap={4} p={4}>
             <Heading as="h1" size="md">
               Grokking The Coding Interview Randomizer
