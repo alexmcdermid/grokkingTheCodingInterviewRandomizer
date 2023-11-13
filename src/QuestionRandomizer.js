@@ -36,7 +36,7 @@ const QuestionRandomizer = () => {
   return (
     <Box>
       <Menu closeOnSelect={false}>
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} m={2}>
           Select Categories
         </MenuButton>
         <MenuList>
@@ -50,7 +50,7 @@ const QuestionRandomizer = () => {
         </MenuList>
       </Menu>
       
-      <Button colorScheme="teal" onClick={getRandomQuestion} ml={4}>Get Random Question</Button>
+      <Button colorScheme="teal" onClick={getRandomQuestion} m={2}>Get Random Question</Button>
       {randomQuestion && (
         <Box mt={4}>
           <Heading as="h2" size="md">Category: {randomCategory}</Heading>
