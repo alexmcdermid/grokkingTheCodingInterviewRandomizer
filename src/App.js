@@ -1,7 +1,22 @@
 import './App.css';
-import { Box, Heading, Container, Flex, IconButton, useColorMode } from '@chakra-ui/react';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { Box, Heading, Container, Flex } from '@chakra-ui/react';
 import QuestionRandomizer from './QuestionRandomizer';
 import Navbar from './Navbar'
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD2eLPAUwRzO0cMC1giTZpuTzgdSGcTf2U",
+  authDomain: "grokkingthecodinginterviewr.firebaseapp.com",
+  projectId: "grokkingthecodinginterviewr",
+  storageBucket: "grokkingthecodinginterviewr.appspot.com",
+  messagingSenderId: "885854526752",
+  appId: "1:885854526752:web:b7ce998d3c59bded160b45",
+  measurementId: "G-LRLFG100L2"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 function App() {
   return (
