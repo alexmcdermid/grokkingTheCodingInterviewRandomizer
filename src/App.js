@@ -1,6 +1,7 @@
 import './App.css';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore, doc, setDoc, updateDoc } from "firebase/firestore";
 import { Box, Heading, Container, Flex } from '@chakra-ui/react';
 import { AuthProvider  } from './AuthContext';
 import QuestionRandomizer from './QuestionRandomizer';
@@ -21,7 +22,7 @@ const analytics = getAnalytics(app);
 
 function App() {
   return (
-    <AuthProvider >
+    <AuthProvider>
       <Box>
         <Navbar/>
         <Container>
