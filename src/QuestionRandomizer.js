@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { Button, Text, Link, Heading, Box, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import { useLogClick } from './logClick';
+import { useAuth } from './AuthContext';
 import questions from './Questions';
 
 const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const logClick = useLogClick();
+  const { currentUser } = useAuth();
+
+  const handleClick = () => {
+    if (currentUser) {
+      logClick("link-id", currentUser.uid);
+    }
+  };
 
   const toggleCategory = (category) => {
     setSelectedCategories(prev =>
@@ -54,7 +64,7 @@ const QuestionRandomizer = () => {
       {randomQuestion && (
         <Box mt={4}>
           <Heading as="h2" size="md">Category: {randomCategory}</Heading>
-          <Link href={randomQuestion} isExternal mt={2} color="teal.500">
+          <Link href={randomQuestion} onClick={handleClick} isExternal mt={2} color="teal.500">
             {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
           </Link>
         </Box>

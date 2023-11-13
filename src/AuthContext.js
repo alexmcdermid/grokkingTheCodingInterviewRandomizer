@@ -18,7 +18,8 @@ export const AuthProvider = ({ children }) => {
     const provider = new GithubAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
       const user = result.user;
-      setCurrentUser(user);  
+      setCurrentUser(user);
+      console.log(user)  
       toast({
         title: 'Sign-in successful',
         description: `Welcome ${user.displayName}! You're now signed in.`,
