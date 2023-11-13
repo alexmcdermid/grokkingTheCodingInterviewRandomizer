@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, signInWithPopup, GithubAuthProvider } from 'firebase/auth';
+import { useToast } from '@chakra-ui/react';
 
 export const AuthContext = createContext();
 
@@ -11,13 +12,30 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const auth = getAuth();
+  const toast = useToast();
 
   const signInWithGitHub = () => {
     const provider = new GithubAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
-      // Handle the signed in user
+      const token = result.credential.accessToken;
+      const user = result.user;
+      setCurrentUser(user);  
+      toast({
+        title: 'Sign-in successful',
+        description: `Welcome ${user.displayName}! You're now signed in.`,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
     }).catch((error) => {
-      // Handle errors
+      console.error("Error during GitHub sign in:", error);
+      toast({
+        title: 'Sign-in failed',
+        description: `Error: ${error.message}`,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     });
   };
 
