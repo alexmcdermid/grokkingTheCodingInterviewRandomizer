@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   const signInWithGitHub = () => {
     const provider = new GithubAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
-      const token = result.credential.accessToken;
       const user = result.user;
       setCurrentUser(user);  
       toast({
