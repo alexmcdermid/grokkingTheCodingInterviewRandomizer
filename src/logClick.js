@@ -1,22 +1,20 @@
-import { useContext } from 'react';
 import { useFirebase } from './FirebaseContext';
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export const useLogClick = () => {
-  const { db } = useFirebase;
+  const { db } = useFirebase();
 
   const logClick = async (linkId, userId) => {
     if (!userId) return;
 
     const clickData = {
-      userId,
+      uid: userId,
       link: linkId,
       clickedAt: serverTimestamp()
     };
 
     try {
-      const docRef = doc(db, "userProblemTracking", `${Date.now()}-${userId}`);
-      await setDoc(docRef, clickData);
+      await addDoc(collection(db, "userProblemTracking"), clickData);
     } catch (error) {
       console.error("Error logging click:", error);
     }

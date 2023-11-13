@@ -12,9 +12,10 @@ const QuestionRandomizer = () => {
   const logClick = useLogClick();
   const { currentUser } = useAuth();
 
-  const handleClick = () => {
+  const handleClick = (event) => {
+    const linkHref = event.currentTarget.getAttribute('href');
     if (currentUser) {
-      logClick("link-id", currentUser.uid);
+      logClick(linkHref, currentUser.uid);
     }
   };
 
