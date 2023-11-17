@@ -29,10 +29,6 @@ function StatsModalComponent(props) {
     return timestamp ? new Date(timestamp.seconds * 1000).toLocaleString("en-US") : '';
   };  
 
-  const handleClick = (event) => {
-    const linkHref = event.currentTarget.getAttribute('href');
-  };
-
   // this is being used in two places should dry
   const getProblemTitle = (url) => {
     const parts = url.split('/');
@@ -71,7 +67,7 @@ function StatsModalComponent(props) {
                         <ListIcon as={CheckCircleIcon} color='green.500' />
                         {convertTimestampToDate(problem.completed_at)}
                       </div>
-                      <Link href={problem.link} onClick={handleClick} isExternal mt={2} color="teal.500">
+                      <Link href={problem.link} isExternal mt={2} color="teal.500">
                         {getProblemTitle(problem.link)} <Text as="span">→</Text>
                       </Link>
                     </ListItem>
@@ -81,7 +77,7 @@ function StatsModalComponent(props) {
                         <ListIcon as={EditIcon} color='yellow.500' />
                         {convertTimestampToDate(problem.clickedAt)}
                       </div>
-                      <Link href={problem.link} onClick={handleClick} isExternal mt={2} color="teal.500">
+                      <Link href={problem.link} isExternal mt={2} color="teal.500">
                         {getProblemTitle(problem.link)} <Text as="span">→</Text>
                       </Link>
                     </ListItem>
