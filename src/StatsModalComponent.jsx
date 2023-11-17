@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { query, collection, where, getDocs } from 'firebase/firestore'
+import { query, collection, where, getDocs, orderBy } from 'firebase/firestore'
 import {
   Modal,
   ModalOverlay,
@@ -39,7 +39,10 @@ function StatsModalComponent(props) {
 
   useEffect(() => {
     const fetchUserProblems = async () => {
-      const q = query(collection(db, "userProblemTracking"), where("uid", "==", props.currentUserUid))
+      const q = query(
+        collection(db, "userProblemTracking"), 
+        where("uid", "==", props.currentUserUid),
+        orderBy("clickedAt", "desc"))
       const querySnaptshot = await getDocs(q)
       const problems = querySnaptshot.docs.map(doc => doc.data())
       setUserProblems(problems)
