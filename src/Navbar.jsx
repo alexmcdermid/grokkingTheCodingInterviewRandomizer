@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useAuth } from './AuthContext';
+import StatsModalComponent from './StatsModalComponent';
 
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -62,8 +63,8 @@ export default function Nav() {
                     </Center>
                     <br />
                     <MenuDivider />
-                    {/* <MenuItem>Your Stats</MenuItem>
-                    <MenuItem>Account Settings</MenuItem> */}
+                    <StatsModalComponent />
+                    {/* <MenuItem>Account Settings</MenuItem> */}
                     <MenuItem onClick={signOut}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
