@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { query, collection, where, getDocs } from 'firebase/firestore'
 import {
   Modal,
   ModalOverlay,
@@ -11,9 +12,24 @@ import {
   MenuItem,
   useDisclosure
 } from '@chakra-ui/react'
+import { useFirebase } from './FirebaseContext'
 
-function StatsModalComponent() {
+function StatsModalComponent(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [userProblems, setUserProblems] = useState([])
+  const { db } = useFirebase()
+
+  useEffect(() => {
+    const fetchUserProblems = async () => {
+      const q = query(collection(db, "userProblemTracking"), where("uid", "==", props.currentUserUid))
+      const querySnaptshot = await getDocs(q)
+      const problems = querySnaptshot.docs.map(doc => doc.data())
+      setUserProblems(problems)
+    }
+
+    fetchUserProblems()
+  }, [db, props.currentUserUid])
+
   return (
     <>
       <MenuItem onClick={onOpen}>Your Stats</MenuItem>
@@ -21,17 +37,18 @@ function StatsModalComponent() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Your Stats</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            some text
+            {userProblems.map((problem, index) => (
+              <div key={index}> {problem.link} </div>
+            ))}
           </ModalBody>
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost'>Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

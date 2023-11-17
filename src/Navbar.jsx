@@ -63,7 +63,7 @@ export default function Nav() {
                     </Center>
                     <br />
                     <MenuDivider />
-                    <StatsModalComponent />
+                    <StatsModalComponent currentUserUid={currentUser.uid}/>
                     {/* <MenuItem>Account Settings</MenuItem> */}
                     <MenuItem onClick={signOut}>Logout</MenuItem>
                   </MenuList>
