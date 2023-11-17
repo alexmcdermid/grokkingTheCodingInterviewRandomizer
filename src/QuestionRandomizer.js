@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Text, Link, Heading, Box, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem } from '@chakra-ui/react';
+import { Button, Text, Link, Heading, Box, Flex, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useLogClick } from './logClick';
 import { useAuth } from './AuthContext';
@@ -9,13 +9,19 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showCompletionButtons, setShowCompletionButtons] = useState(false)
   const logClick = useLogClick();
   const { currentUser } = useAuth();
+
+  const handleCompletionClick = () => {
+
+  }
 
   const handleClick = (event) => {
     const linkHref = event.currentTarget.getAttribute('href');
     if (currentUser) {
       logClick(linkHref, currentUser.uid);
+      setShowCompletionButtons(true)
     }
   };
 
@@ -68,6 +74,17 @@ const QuestionRandomizer = () => {
           <Link href={randomQuestion} onClick={handleClick} isExternal mt={2} color="teal.500">
             {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
           </Link>
+          {showCompletionButtons && (
+            <Flex mt={2} gap={2}>
+              <Flex direction={'column'} justifyContent={'center'}>
+                <Text>Did you complete this question?</Text>
+              </Flex>
+              <span>
+                <Button colorScheme="green" mr={2} onClick={handleCompletionClick(true)}>Yes</Button>
+                <Button colorScheme="red" onClick={handleCompletionClick(false)}>No</Button>
+              </span>
+            </Flex>
+          )}
         </Box>
       )}
 
