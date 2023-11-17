@@ -10,14 +10,22 @@ import {
   ModalCloseButton,
   Button,
   MenuItem,
-  useDisclosure
+  useDisclosure,
+  List,
+  ListItem,
+  ListIcon
 } from '@chakra-ui/react'
+import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons'
 import { useFirebase } from './FirebaseContext'
 
 function StatsModalComponent(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [userProblems, setUserProblems] = useState([])
   const { db } = useFirebase()
+
+  const convertTimestampToDate = (timestamp) => {
+    return timestamp ? new Date(timestamp.seconds * 1000).toLocaleString("en-US") : '';
+  };  
 
   useEffect(() => {
     const fetchUserProblems = async () => {
@@ -40,9 +48,29 @@ function StatsModalComponent(props) {
           <ModalHeader>Your Stats</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {userProblems.map((problem, index) => (
-              <div key={index}> {problem.link} </div>
-            ))}
+            <List spacing={3}>
+              {userProblems.map((problem, index) => (
+                <React.Fragment key={index}>
+                  {problem.completed_at ? (
+                    <ListItem>
+                      <div>
+                        <ListIcon as={CheckCircleIcon} color='green.500' />
+                        {convertTimestampToDate(problem.completed_at)}
+                      </div>
+                      {problem.link}
+                    </ListItem>
+                  ) : (
+                    <ListItem>
+                      <div>
+                        <ListIcon as={EditIcon} color='green.500' />
+                        {convertTimestampToDate(problem.clickedAt)}
+                      </div>
+                      {problem.link}
+                    </ListItem>
+                  )}
+                </React.Fragment>
+              ))}
+            </List>
           </ModalBody>
 
           <ModalFooter>
