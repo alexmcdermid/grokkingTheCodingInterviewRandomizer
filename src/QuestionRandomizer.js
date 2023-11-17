@@ -9,7 +9,9 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  // used for logging current completion question and showing completion check
   const [showCompletionButtons, setShowCompletionButtons] = useState(false)
+  const [completionQuestion, setCompletionQuestion] = useState(null)
   const logClick = useLogClick();
   const { currentUser } = useAuth();
 
@@ -22,6 +24,7 @@ const QuestionRandomizer = () => {
     if (currentUser) {
       logClick(linkHref, currentUser.uid);
       setShowCompletionButtons(true)
+      setCompletionQuestion(linkHref)
     }
   };
 
@@ -41,6 +44,7 @@ const QuestionRandomizer = () => {
 
     setRandomCategory(randomCategory);
     setRandomQuestion(randomQuestion);
+    setShowCompletionButtons(false)
   };
 
   const getProblemTitle = (url) => {
@@ -74,17 +78,6 @@ const QuestionRandomizer = () => {
           <Link href={randomQuestion} onClick={handleClick} isExternal mt={2} color="teal.500">
             {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
           </Link>
-          {showCompletionButtons && (
-            <Flex mt={2} gap={2}>
-              <Flex direction={'column'} justifyContent={'center'}>
-                <Text>Did you complete this question?</Text>
-              </Flex>
-              <span>
-                <Button colorScheme="green" mr={2} onClick={handleCompletionClick(true)}>Yes</Button>
-                <Button colorScheme="red" onClick={handleCompletionClick(false)}>No</Button>
-              </span>
-            </Flex>
-          )}
         </Box>
       )}
 
@@ -109,6 +102,18 @@ const QuestionRandomizer = () => {
           </List>
         </Box>
       )}
+
+      {showCompletionButtons && (
+        <Flex mt={2} gap={2}>
+          <Flex direction={'column'} justifyContent={'center'}>
+            <Text>Did you complete {getProblemTitle(completionQuestion)}?</Text>
+          </Flex>
+          <span>
+            <Button colorScheme="green" mr={2} onClick={handleCompletionClick(true)}>Yes</Button>
+            <Button colorScheme="red" onClick={handleCompletionClick(false)}>No</Button>
+          </span>
+        </Flex>
+      )}  
     </Box>
   );
 };
