@@ -1,5 +1,5 @@
 import { useFirebase } from './FirebaseContext';
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, getDoc } from "firebase/firestore";
 
 export const useLogClick = () => {
   const { db } = useFirebase();
@@ -15,7 +15,11 @@ export const useLogClick = () => {
     };
 
     try {
-      await addDoc(collection(db, "userProblemTracking"), clickData);
+      const docRef = await addDoc(collection(db, "userProblemTracking"), clickData);
+      const newDoc = await getDoc(docRef);
+      const clickedAt = newDoc.data().clickedAt;
+
+      return clickedAt
     } catch (error) {
       console.error("Error logging click:", error);
     }

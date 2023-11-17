@@ -11,20 +11,24 @@ const QuestionRandomizer = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   // used for logging current completion question and showing completion check
   const [showCompletionButtons, setShowCompletionButtons] = useState(false)
-  const [completionQuestion, setCompletionQuestion] = useState(null)
+  const [completionQuestion, setCompletionQuestionInfo] = useState([])
   const logClick = useLogClick();
   const { currentUser } = useAuth();
 
-  const handleCompletionClick = () => {
-
+  const handleCompletionClick = (state) => {
+    
   }
 
-  const handleClick = (event) => {
+  const handleClick = async (event) => {
     const linkHref = event.currentTarget.getAttribute('href');
     if (currentUser) {
-      logClick(linkHref, currentUser.uid);
-      setShowCompletionButtons(true)
-      setCompletionQuestion(linkHref)
+      try {
+        const clickedAt = await logClick(linkHref, currentUser.uid);
+      } catch (error) {
+        console.error("Error logging click:", error);
+      }
+      setShowCompletionButtons(true);
+      setCompletionQuestionInfo([linkHref. clickedAt]);
     }
   };
 
@@ -108,10 +112,10 @@ const QuestionRandomizer = () => {
           <Flex direction={'column'} justifyContent={'center'}>
             <Text>Did you complete {getProblemTitle(completionQuestion)}?</Text>
           </Flex>
-          <span>
+          <Flex wrap={'nowrap'}>
             <Button colorScheme="green" mr={2} onClick={handleCompletionClick(true)}>Yes</Button>
             <Button colorScheme="red" onClick={handleCompletionClick(false)}>No</Button>
-          </span>
+          </Flex>
         </Flex>
       )}  
     </Box>
