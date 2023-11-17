@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { query, collection, where, getDocs, orderBy } from 'firebase/firestore'
 import {
   Modal,
@@ -15,7 +15,9 @@ import {
   ListItem,
   ListIcon,
   Link,
-  Text
+  Text,
+  Spinner,
+  Center
 } from '@chakra-ui/react'
 import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons'
 import { useFirebase } from './FirebaseContext'
@@ -23,6 +25,7 @@ import { useFirebase } from './FirebaseContext'
 function StatsModalComponent(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [userProblems, setUserProblems] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
   const { db } = useFirebase()
 
   const convertTimestampToDate = (timestamp) => {
@@ -37,8 +40,9 @@ function StatsModalComponent(props) {
     return words.join(' ');
   };
 
-  useEffect(() => {
-    const fetchUserProblems = async () => {
+  const fetchUserProblems = async () => {
+    setIsLoading(true);
+    try {
       const q = query(
         collection(db, "userProblemTracking"), 
         where("uid", "==", props.currentUserUid),
@@ -46,14 +50,19 @@ function StatsModalComponent(props) {
       const querySnaptshot = await getDocs(q)
       const problems = querySnaptshot.docs.map(doc => doc.data())
       setUserProblems(problems)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
+  const handleOpen = () => {
     fetchUserProblems()
-  }, [db, props.currentUserUid])
+    onOpen()
+  }
 
   return (
     <>
-      <MenuItem onClick={onOpen}>Your Stats</MenuItem>
+      <MenuItem onClick={handleOpen}>Your Stats</MenuItem>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -61,33 +70,39 @@ function StatsModalComponent(props) {
           <ModalHeader>Your Stats</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <List spacing={3}>
-              {userProblems.map((problem, index) => (
-                <React.Fragment key={index}>
-                  {problem.completed_at ? (
-                    <ListItem>
-                      <div>
-                        <ListIcon as={CheckCircleIcon} color='green.500' />
-                        {convertTimestampToDate(problem.completed_at)}
-                      </div>
-                      <Link href={problem.link} isExternal mt={2} color="teal.500">
-                        {getProblemTitle(problem.link)} <Text as="span">→</Text>
-                      </Link>
-                    </ListItem>
-                  ) : (
-                    <ListItem>
-                      <div>
-                        <ListIcon as={EditIcon} color='yellow.500' />
-                        {convertTimestampToDate(problem.clickedAt)}
-                      </div>
-                      <Link href={problem.link} isExternal mt={2} color="teal.500">
-                        {getProblemTitle(problem.link)} <Text as="span">→</Text>
-                      </Link>
-                    </ListItem>
-                  )}
-                </React.Fragment>
-              ))}
-            </List>
+            {isLoading ? (
+              <Center>
+                <Spinner color="blue.500" size={'xl'}/>
+              </Center>
+              ) : (
+                <List spacing={3}>
+                  {userProblems.map((problem, index) => (
+                    <React.Fragment key={index}>
+                      {problem.completed_at ? (
+                        <ListItem>
+                          <div>
+                            <ListIcon as={CheckCircleIcon} color='green.500' />
+                            {convertTimestampToDate(problem.completed_at)}
+                          </div>
+                          <Link href={problem.link} isExternal mt={2} color="teal.500">
+                            {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                          </Link>
+                        </ListItem>
+                      ) : (
+                        <ListItem>
+                          <div>
+                            <ListIcon as={EditIcon} color='yellow.500' />
+                            {convertTimestampToDate(problem.clickedAt)}
+                          </div>
+                          <Link href={problem.link} isExternal mt={2} color="teal.500">
+                            {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                          </Link>
+                        </ListItem>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </List>
+              )}
           </ModalBody>
 
           <ModalFooter>
