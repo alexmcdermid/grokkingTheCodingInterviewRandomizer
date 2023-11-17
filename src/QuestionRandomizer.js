@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
-import { Button, Text, Link, Heading, Box, Flex, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem } from '@chakra-ui/react';
+import { Button, Text, Link, Heading, Box, Flex, Menu, MenuButton, MenuList, MenuItem, Checkbox, List, ListItem, useToast } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useLogClick } from './logClick';
+import { useUpdateQuestionStatus } from './UpdateQuestionStatus';
 import { useAuth } from './AuthContext';
 import questions from './Questions';
 
 const QuestionRandomizer = () => {
+  const toast = useToast();
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   // used for logging current completion question and showing completion check
   const [showCompletionButtons, setShowCompletionButtons] = useState(false)
+  // this has a tuple of question href and created at 
   const [completionQuestion, setCompletionQuestionInfo] = useState([])
+  const updateQuestionStatus = useUpdateQuestionStatus()
+
   const logClick = useLogClick();
   const { currentUser } = useAuth();
 
-  const handleCompletionClick = (state) => {
-    
+  const handleCompletionClick = async (state) => {
+    try {
+      await updateQuestionStatus(completionQuestion[0], completionQuestion[1], state)
+      setShowCompletionButtons(false);
+      toast({
+        title: 'Question state updated succesfully.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating question status:", error);
+      toast({
+        title: 'Question state failed.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   }
 
   const handleClick = async (event) => {
@@ -24,11 +46,11 @@ const QuestionRandomizer = () => {
     if (currentUser) {
       try {
         const clickedAt = await logClick(linkHref, currentUser.uid);
+        setCompletionQuestionInfo([linkHref, clickedAt]);
+        setShowCompletionButtons(true);
       } catch (error) {
         console.error("Error logging click:", error);
       }
-      setShowCompletionButtons(true);
-      setCompletionQuestionInfo([linkHref. clickedAt]);
     }
   };
 
@@ -110,11 +132,11 @@ const QuestionRandomizer = () => {
       {showCompletionButtons && (
         <Flex mt={2} gap={2}>
           <Flex direction={'column'} justifyContent={'center'}>
-            <Text>Did you complete {getProblemTitle(completionQuestion)}?</Text>
+            <Text>Did you complete {getProblemTitle(completionQuestion[0])}?</Text>
           </Flex>
           <Flex wrap={'nowrap'}>
-            <Button colorScheme="green" mr={2} onClick={handleCompletionClick(true)}>Yes</Button>
-            <Button colorScheme="red" onClick={handleCompletionClick(false)}>No</Button>
+            <Button colorScheme="green" mr={2} onClick={() => handleCompletionClick(true)}>Yes</Button>
+            <Button colorScheme="red" onClick={() => handleCompletionClick(false)}>No</Button>
           </Flex>
         </Flex>
       )}  
