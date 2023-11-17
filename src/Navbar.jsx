@@ -12,6 +12,7 @@ import {
   Stack,
   useColorMode,
   Center,
+  Heading
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useAuth } from './AuthContext';
@@ -24,7 +25,11 @@ export default function Nav() {
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={8}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>GTCIR</Box>
+          <Box>
+            <Heading size={"lg"}>
+              GTCIR
+            </Heading>
+          </Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
