@@ -13,7 +13,9 @@ import {
   useDisclosure,
   List,
   ListItem,
-  ListIcon
+  ListIcon,
+  Link,
+  Text
 } from '@chakra-ui/react'
 import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons'
 import { useFirebase } from './FirebaseContext'
@@ -26,6 +28,18 @@ function StatsModalComponent(props) {
   const convertTimestampToDate = (timestamp) => {
     return timestamp ? new Date(timestamp.seconds * 1000).toLocaleString("en-US") : '';
   };  
+
+  const handleClick = (event) => {
+    const linkHref = event.currentTarget.getAttribute('href');
+  };
+
+  // this is being used in two places should dry
+  const getProblemTitle = (url) => {
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 2];
+    const words = lastPart.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    return words.join(' ');
+  };
 
   useEffect(() => {
     const fetchUserProblems = async () => {
@@ -57,15 +71,19 @@ function StatsModalComponent(props) {
                         <ListIcon as={CheckCircleIcon} color='green.500' />
                         {convertTimestampToDate(problem.completed_at)}
                       </div>
-                      {problem.link}
+                      <Link href={problem.link} onClick={handleClick} isExternal mt={2} color="teal.500">
+                        {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                      </Link>
                     </ListItem>
                   ) : (
                     <ListItem>
                       <div>
-                        <ListIcon as={EditIcon} color='green.500' />
+                        <ListIcon as={EditIcon} color='yellow.500' />
                         {convertTimestampToDate(problem.clickedAt)}
                       </div>
-                      {problem.link}
+                      <Link href={problem.link} onClick={handleClick} isExternal mt={2} color="teal.500">
+                        {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                      </Link>
                     </ListItem>
                   )}
                 </React.Fragment>
