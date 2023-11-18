@@ -45,7 +45,7 @@ const QuestionRandomizer = () => {
     const linkHref = event.currentTarget.getAttribute('href');
     if (currentUser) {
       try {
-        const clickedAt = await logClick(linkHref, currentUser.uid);
+        const clickedAt = await logClick(linkHref, currentUser.uid, currentUser.email);
         setCompletionQuestionInfo([linkHref, clickedAt]);
         setShowCompletionButtons(true);
       } catch (error) {
