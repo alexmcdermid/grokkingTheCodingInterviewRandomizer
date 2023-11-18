@@ -27,7 +27,7 @@ export default function Nav() {
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
             <Heading size={"lg"}>
-              GTCIR
+              Grokking CS
             </Heading>
           </Box>
 
