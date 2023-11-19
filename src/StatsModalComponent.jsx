@@ -75,33 +75,36 @@ function StatsModalComponent(props) {
                 <Spinner color="blue.500" size={'xl'}/>
               </Center>
               ) : (
-                <List spacing={3}>
-                  {userProblems.map((problem, index) => (
-                    <React.Fragment key={index}>
-                      {problem.completed_at ? (
-                        <ListItem>
-                          <div>
-                            <ListIcon as={CheckCircleIcon} color='green.500' />
-                            {convertTimestampToDate(problem.completed_at)}
-                          </div>
-                          <Link href={problem.link} isExternal mt={2} color="teal.500">
-                            {getProblemTitle(problem.link)} <Text as="span">→</Text>
-                          </Link>
-                        </ListItem>
-                      ) : (
-                        <ListItem>
-                          <div>
-                            <ListIcon as={EditIcon} color='yellow.500' />
-                            {convertTimestampToDate(problem.clickedAt)}
-                          </div>
-                          <Link href={problem.link} isExternal mt={2} color="teal.500">
-                            {getProblemTitle(problem.link)} <Text as="span">→</Text>
-                          </Link>
-                        </ListItem>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </List>
+                userProblems.length === 0 ?
+                  <Text textAlign={'center'}>There is nothing here yet! Start a question to automatically add to your stats.</Text>
+                :
+                  <List spacing={3}>
+                    {userProblems.map((problem, index) => (
+                      <React.Fragment key={index}>
+                        {problem.completed_at ? (
+                          <ListItem>
+                            <div>
+                              <ListIcon as={CheckCircleIcon} color='green.500' />
+                              {convertTimestampToDate(problem.completed_at)}
+                            </div>
+                            <Link href={problem.link} isExternal mt={2} color="teal.500">
+                              {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                            </Link>
+                          </ListItem>
+                        ) : (
+                          <ListItem>
+                            <div>
+                              <ListIcon as={EditIcon} color='yellow.500' />
+                              {convertTimestampToDate(problem.clickedAt)}
+                            </div>
+                            <Link href={problem.link} isExternal mt={2} color="teal.500">
+                              {getProblemTitle(problem.link)} <Text as="span">→</Text>
+                            </Link>
+                          </ListItem>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </List>
               )}
           </ModalBody>
 
