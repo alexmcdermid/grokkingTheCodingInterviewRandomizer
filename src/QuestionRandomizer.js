@@ -65,14 +65,39 @@ const QuestionRandomizer = () => {
 
   const getRandomQuestion = () => {
     const availableCategories = selectedCategories.length > 0 ? selectedCategories : Object.keys(questions);
-    const randomCategory = availableCategories[Math.floor(Math.random() * availableCategories.length)];
-    const questionsInCategory = questions[randomCategory];
-    const randomQuestion = questionsInCategory[Math.floor(Math.random() * questionsInCategory.length)];
-
+    const filteredQuestions = [];
+  
+    // Filter questions by selected categories and difficulties
+    availableCategories.forEach(category => {
+      const questionsInCategory = questions[category].filter(question => {
+        // Include question if no specific difficulty is selected or if it matches one of the selected difficulties
+        return selectedDifficulties.length === 0 || selectedDifficulties.includes(question.difficulty);
+      });
+      filteredQuestions.push(...questionsInCategory);
+    });
+  
+    // Check if there are any questions available after filtering
+    if (filteredQuestions.length === 0) {
+      toast({
+        title: 'No questions available.',
+        description: 'Please adjust your category or difficulty selections.',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+  
+    // Randomly select a question from the filtered list
+    const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
+  
+    // Find the category of the selected question
+    const randomCategory = Object.keys(questions).find(category => questions[category].includes(randomQuestion));
+  
     setRandomCategory(randomCategory);
     setRandomQuestion(randomQuestion);
-    setShowCompletionButtons(false)
-  };
+    setShowCompletionButtons(false);
+  };  
 
   const getProblemTitle = (url) => {
     const parts = url.split('/');
@@ -102,7 +127,7 @@ const QuestionRandomizer = () => {
           Select Difficulty
         </MenuButton>
         <MenuList>
-          {["Easy", "Medium", "Hard"].map(difficulty => (
+          {["easy", "medium", "hard"].map(difficulty => (
             <MenuItem key={difficulty}>
               <Checkbox isChecked={selectedDifficulties.includes(difficulty)} onChange={() => toggleItem(difficulty, setSelectedDifficulties)}>
                 {difficulty}
@@ -122,15 +147,21 @@ const QuestionRandomizer = () => {
         </Box>
       )}
 
-      {selectedCategories.length > 0 && (
-        <Box mt={4}>
-          <Heading as="h3" size="sm">Selected Questions by Category:</Heading>
-          <List spacing={3}>
-            {selectedCategories.map(category => (
+    {selectedCategories.length > 0 && (
+      <Box mt={4}>
+        <Heading as="h3" size="sm">Selected Questions by Category:</Heading>
+        <List spacing={3}>
+          {selectedCategories.map(category => {
+            // Filter questions by difficulty
+            const filteredQuestions = questions[category].filter(question => {
+              return selectedDifficulties.length === 0 || selectedDifficulties.includes(question.difficulty);
+            });
+
+            return (
               <ListItem key={category}>
                 <Heading as="h4" size="xs">{category}</Heading>
                 <List styleType="disc" pl={5}>
-                  {questions[category].map((question, index) => (
+                  {filteredQuestions.map((question, index) => (
                     <ListItem key={index}>
                       <Link href={question.url} onClick={() => handleClick(question)} isExternal color="teal.400">
                         {getProblemTitle(question.url)}
@@ -139,10 +170,12 @@ const QuestionRandomizer = () => {
                   ))}
                 </List>
               </ListItem>
-            ))}
-          </List>
-        </Box>
-      )}
+            );
+          })}
+        </List>
+      </Box>
+    )}
+
 
       {showCompletionButtons && (
         <Flex mt={2} gap={2}>
