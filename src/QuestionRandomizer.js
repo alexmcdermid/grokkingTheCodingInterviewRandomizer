@@ -70,7 +70,6 @@ const QuestionRandomizer = () => {
 
     setRandomCategory(randomCategory);
     setRandomQuestion(randomQuestion);
-    console.log(randomQuestion)
     setShowCompletionButtons(false)
   };
 
