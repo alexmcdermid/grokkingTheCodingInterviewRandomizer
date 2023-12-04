@@ -11,6 +11,7 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState([]);
   // used for logging current completion question and showing completion check
   const [showCompletionButtons, setShowCompletionButtons] = useState(false)
   // this has a tuple of question href and created at 
@@ -54,11 +55,11 @@ const QuestionRandomizer = () => {
     }
   };
 
-  const toggleCategory = (category) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(item => item !== category)
-        : [...prev, category]
+  const toggleItem = (item, setSelected) => {
+    setSelected(prevItems =>
+      prevItems.includes(item)
+        ? prevItems.filter(prevItem => prevItem !== item)
+        : [...prevItems, item]
     );
   };
 
@@ -89,8 +90,22 @@ const QuestionRandomizer = () => {
         <MenuList>
           {Object.keys(questions).map(category => (
             <MenuItem key={category}>
-              <Checkbox isChecked={selectedCategories.includes(category)} onChange={() => toggleCategory(category)}>
+              <Checkbox isChecked={selectedCategories.includes(category)} onChange={() => toggleItem(category, setSelectedCategories)}>
                 {category}
+              </Checkbox>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+      <Menu closeOnSelect={false}>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} m={2}>
+          Select Difficulty
+        </MenuButton>
+        <MenuList>
+          {["Easy", "Medium", "Hard"].map(difficulty => (
+            <MenuItem key={difficulty}>
+              <Checkbox isChecked={selectedDifficulties.includes(difficulty)} onChange={() => toggleItem(difficulty, setSelectedDifficulties)}>
+                {difficulty}
               </Checkbox>
             </MenuItem>
           ))}
