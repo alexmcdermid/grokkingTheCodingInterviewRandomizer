@@ -41,11 +41,11 @@ const QuestionRandomizer = () => {
     }
   }
 
-  const handleClick = async (event) => {
+  const handleClick = async (question, event) => {
     const linkHref = event.currentTarget.getAttribute('href');
     if (currentUser) {
       try {
-        const clickedAt = await logClick(linkHref, currentUser.uid, currentUser.email);
+        const clickedAt = await logClick(linkHref, question.difficulty, currentUser.uid, currentUser.email);
         setCompletionQuestionInfo([linkHref, clickedAt]);
         setShowCompletionButtons(true);
       } catch (error) {
@@ -70,6 +70,7 @@ const QuestionRandomizer = () => {
 
     setRandomCategory(randomCategory);
     setRandomQuestion(randomQuestion);
+    console.log(randomQuestion)
     setShowCompletionButtons(false)
   };
 
@@ -101,7 +102,7 @@ const QuestionRandomizer = () => {
       {randomQuestion && (
         <Box mt={4}>
           <Heading as="h2" size="md">Category: {randomCategory}</Heading>
-          <Link href={randomQuestion.url} onClick={handleClick} isExternal mt={2} color="teal.500">
+          <Link href={randomQuestion.url} onClick={(event) => handleClick(randomQuestion, event)} isExternal mt={2} color="teal.500">
             {getProblemTitle(randomQuestion.url)} <Text as="span">→</Text>
           </Link>
         </Box>
@@ -117,7 +118,7 @@ const QuestionRandomizer = () => {
                 <List styleType="disc" pl={5}>
                   {questions[category].map((question, index) => (
                     <ListItem key={index}>
-                      <Link href={question.url} onClick={handleClick} isExternal color="teal.400">
+                      <Link href={question.url} onClick={(event) => handleClick(question, event)} isExternal color="teal.400">
                         {getProblemTitle(question.url)}
                       </Link>
                     </ListItem>

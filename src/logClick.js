@@ -4,12 +4,13 @@ import { collection, addDoc, serverTimestamp, getDoc } from "firebase/firestore"
 export const useLogClick = () => {
   const { db } = useFirebase();
 
-  const logClick = async (linkId, userId, email) => {
+  const logClick = async (linkId, questionDifficulty,  userId, email) => {
     if (!userId) return;
 
     const clickData = {
       uid: userId,
       link: linkId,
+      question_difficulty: questionDifficulty,
       user_email: email,
       completed_at: null,
       clickedAt: serverTimestamp()
