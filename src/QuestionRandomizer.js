@@ -73,8 +73,8 @@ const QuestionRandomizer = () => {
     setShowCompletionButtons(false)
   };
 
-  const getProblemTitle = (question) => {
-    const parts = question.url.split('/');
+  const getProblemTitle = (url) => {
+    const parts = url.split('/');
     const lastPart = parts[parts.length - 2];
     const words = lastPart.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1));
     return words.join(' ');
@@ -101,8 +101,8 @@ const QuestionRandomizer = () => {
       {randomQuestion && (
         <Box mt={4}>
           <Heading as="h2" size="md">Category: {randomCategory}</Heading>
-          <Link href={randomQuestion} onClick={handleClick} isExternal mt={2} color="teal.500">
-            {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
+          <Link href={randomQuestion.url} onClick={handleClick} isExternal mt={2} color="teal.500">
+            {getProblemTitle(randomQuestion.url)} <Text as="span">→</Text>
           </Link>
         </Box>
       )}
@@ -117,8 +117,8 @@ const QuestionRandomizer = () => {
                 <List styleType="disc" pl={5}>
                   {questions[category].map((question, index) => (
                     <ListItem key={index}>
-                      <Link href={question} onClick={handleClick} isExternal color="teal.400">
-                        {getProblemTitle(question)}
+                      <Link href={question.url} onClick={handleClick} isExternal color="teal.400">
+                        {getProblemTitle(question.url)}
                       </Link>
                     </ListItem>
                   ))}
