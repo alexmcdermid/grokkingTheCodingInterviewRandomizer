@@ -73,8 +73,8 @@ const QuestionRandomizer = () => {
     setShowCompletionButtons(false)
   };
 
-  const getProblemTitle = (url) => {
-    const parts = url.split('/');
+  const getProblemTitle = (question) => {
+    const parts = question.url.split('/');
     const lastPart = parts[parts.length - 2];
     const words = lastPart.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1));
     return words.join(' ');
