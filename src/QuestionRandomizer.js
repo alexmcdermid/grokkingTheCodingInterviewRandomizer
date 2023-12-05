@@ -11,6 +11,7 @@ const QuestionRandomizer = () => {
   const [randomQuestion, setRandomQuestion] = useState(null);
   const [randomCategory, setRandomCategory] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState([]);
   // used for logging current completion question and showing completion check
   const [showCompletionButtons, setShowCompletionButtons] = useState(false)
   // this has a tuple of question href and created at 
@@ -41,11 +42,11 @@ const QuestionRandomizer = () => {
     }
   }
 
-  const handleClick = async (event) => {
-    const linkHref = event.currentTarget.getAttribute('href');
+  const handleClick = async (question) => {
+    const linkHref = question.url;
     if (currentUser) {
       try {
-        const clickedAt = await logClick(linkHref, currentUser.uid, currentUser.email);
+        const clickedAt = await logClick(linkHref, question.difficulty, currentUser.uid, currentUser.email);
         setCompletionQuestionInfo([linkHref, clickedAt]);
         setShowCompletionButtons(true);
       } catch (error) {
@@ -54,24 +55,49 @@ const QuestionRandomizer = () => {
     }
   };
 
-  const toggleCategory = (category) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(item => item !== category)
-        : [...prev, category]
+  const toggleItem = (item, setSelected) => {
+    setSelected(prevItems =>
+      prevItems.includes(item)
+        ? prevItems.filter(prevItem => prevItem !== item)
+        : [...prevItems, item]
     );
   };
 
   const getRandomQuestion = () => {
     const availableCategories = selectedCategories.length > 0 ? selectedCategories : Object.keys(questions);
-    const randomCategory = availableCategories[Math.floor(Math.random() * availableCategories.length)];
-    const questionsInCategory = questions[randomCategory];
-    const randomQuestion = questionsInCategory[Math.floor(Math.random() * questionsInCategory.length)];
-
+    const filteredQuestions = [];
+  
+    // Filter questions by selected categories and difficulties
+    availableCategories.forEach(category => {
+      const questionsInCategory = questions[category].filter(question => {
+        // Include question if no specific difficulty is selected or if it matches one of the selected difficulties
+        return selectedDifficulties.length === 0 || selectedDifficulties.includes(question.difficulty);
+      });
+      filteredQuestions.push(...questionsInCategory);
+    });
+  
+    // Check if there are any questions available after filtering
+    if (filteredQuestions.length === 0) {
+      toast({
+        title: 'No questions available.',
+        description: 'Please adjust your category or difficulty selections.',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+  
+    // Randomly select a question from the filtered list
+    const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
+  
+    // Find the category of the selected question
+    const randomCategory = Object.keys(questions).find(category => questions[category].includes(randomQuestion));
+  
     setRandomCategory(randomCategory);
     setRandomQuestion(randomQuestion);
-    setShowCompletionButtons(false)
-  };
+    setShowCompletionButtons(false);
+  };  
 
   const getProblemTitle = (url) => {
     const parts = url.split('/');
@@ -89,8 +115,22 @@ const QuestionRandomizer = () => {
         <MenuList>
           {Object.keys(questions).map(category => (
             <MenuItem key={category}>
-              <Checkbox isChecked={selectedCategories.includes(category)} onChange={() => toggleCategory(category)}>
+              <Checkbox isChecked={selectedCategories.includes(category)} onChange={() => toggleItem(category, setSelectedCategories)}>
                 {category}
+              </Checkbox>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+      <Menu closeOnSelect={false}>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} m={2}>
+          Select Difficulty
+        </MenuButton>
+        <MenuList>
+          {["easy", "medium", "hard"].map(difficulty => (
+            <MenuItem key={difficulty}>
+              <Checkbox isChecked={selectedDifficulties.includes(difficulty)} onChange={() => toggleItem(difficulty, setSelectedDifficulties)}>
+                {difficulty}
               </Checkbox>
             </MenuItem>
           ))}
@@ -100,34 +140,48 @@ const QuestionRandomizer = () => {
       <Button colorScheme="teal" onClick={getRandomQuestion} m={2}>Get Random Question</Button>
       {randomQuestion && (
         <Box mt={4}>
-          <Heading as="h2" size="md">Category: {randomCategory}</Heading>
-          <Link href={randomQuestion} onClick={handleClick} isExternal mt={2} color="teal.500">
-            {getProblemTitle(randomQuestion)} <Text as="span">→</Text>
-          </Link>
+          <Heading as="h2" size="md">Random Category: {randomCategory}</Heading>
+          <Text>Random Question:&nbsp;
+            <Link href={randomQuestion.url} onClick={() => handleClick(randomQuestion)} isExternal mt={2} color="teal.500">
+              {getProblemTitle(randomQuestion.url)} <Text as="span">→</Text>
+            </Link>
+          </Text>
         </Box>
       )}
 
-      {selectedCategories.length > 0 && (
-        <Box mt={4}>
-          <Heading as="h3" size="sm">Selected Questions by Category:</Heading>
-          <List spacing={3}>
-            {selectedCategories.map(category => (
-              <ListItem key={category}>
-                <Heading as="h4" size="xs">{category}</Heading>
-                <List styleType="disc" pl={5}>
-                  {questions[category].map((question, index) => (
-                    <ListItem key={index}>
-                      <Link href={question} onClick={handleClick} isExternal color="teal.400">
-                        {getProblemTitle(question)}
-                      </Link>
-                    </ListItem>
-                  ))}
-                </List>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      )}
+    {selectedCategories.length > 0 && (
+      <Box mt={4}>
+        <Heading as="h3" size="sm">Selected Questions by Category 
+        {selectedDifficulties.length > 0 && (` and Difficulty [${selectedDifficulties}]`)}:</Heading>
+        <List spacing={3}>
+          {selectedCategories.map(category => {
+            // Filter questions by difficulty
+            const filteredQuestions = questions[category].filter(question => {
+              return selectedDifficulties.length === 0 || selectedDifficulties.includes(question.difficulty);
+            });
+            if (filteredQuestions.length > 0) {
+              return (
+                <ListItem key={category}>
+                  <Heading as="h4" size="xs">{category}</Heading>
+                  <List styleType="disc" pl={5}>
+                    {filteredQuestions.map((question, index) => (
+                      <ListItem key={index}>
+                        <Link href={question.url} onClick={() => handleClick(question)} isExternal color="teal.400">
+                          {getProblemTitle(question.url)}
+                        </Link>
+                      </ListItem>
+                    ))}
+                  </List>
+                </ListItem>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </List>
+      </Box>
+    )}
+
 
       {showCompletionButtons && (
         <Flex mt={2} gap={2}>
