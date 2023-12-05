@@ -140,10 +140,12 @@ const QuestionRandomizer = () => {
       <Button colorScheme="teal" onClick={getRandomQuestion} m={2}>Get Random Question</Button>
       {randomQuestion && (
         <Box mt={4}>
-          <Heading as="h2" size="md">Category: {randomCategory}</Heading>
-          <Link href={randomQuestion.url} onClick={() => handleClick(randomQuestion)} isExternal mt={2} color="teal.500">
-            {getProblemTitle(randomQuestion.url)} <Text as="span">→</Text>
-          </Link>
+          <Heading as="h2" size="md">Random Category: {randomCategory}</Heading>
+          <Text>Random Question:&nbsp;
+            <Link href={randomQuestion.url} onClick={() => handleClick(randomQuestion)} isExternal mt={2} color="teal.500">
+              {getProblemTitle(randomQuestion.url)} <Text as="span">→</Text>
+            </Link>
+          </Text>
         </Box>
       )}
 
