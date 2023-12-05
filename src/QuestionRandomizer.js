@@ -149,28 +149,32 @@ const QuestionRandomizer = () => {
 
     {selectedCategories.length > 0 && (
       <Box mt={4}>
-        <Heading as="h3" size="sm">Selected Questions by Category:</Heading>
+        <Heading as="h3" size="sm">Selected Questions by Category 
+        {selectedDifficulties.length > 0 && (` and Difficulty [${selectedDifficulties}]`)}:</Heading>
         <List spacing={3}>
           {selectedCategories.map(category => {
             // Filter questions by difficulty
             const filteredQuestions = questions[category].filter(question => {
               return selectedDifficulties.length === 0 || selectedDifficulties.includes(question.difficulty);
             });
-
-            return (
-              <ListItem key={category}>
-                <Heading as="h4" size="xs">{category}</Heading>
-                <List styleType="disc" pl={5}>
-                  {filteredQuestions.map((question, index) => (
-                    <ListItem key={index}>
-                      <Link href={question.url} onClick={() => handleClick(question)} isExternal color="teal.400">
-                        {getProblemTitle(question.url)}
-                      </Link>
-                    </ListItem>
-                  ))}
-                </List>
-              </ListItem>
-            );
+            if (filteredQuestions.length > 0) {
+              return (
+                <ListItem key={category}>
+                  <Heading as="h4" size="xs">{category}</Heading>
+                  <List styleType="disc" pl={5}>
+                    {filteredQuestions.map((question, index) => (
+                      <ListItem key={index}>
+                        <Link href={question.url} onClick={() => handleClick(question)} isExternal color="teal.400">
+                          {getProblemTitle(question.url)}
+                        </Link>
+                      </ListItem>
+                    ))}
+                  </List>
+                </ListItem>
+              );
+            } else {
+              return null;
+            }
           })}
         </List>
       </Box>
